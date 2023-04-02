@@ -32,9 +32,6 @@ where
     }
 }
 
-enum Error {
-    Err,
-}
 
 #[derive(PartialEq, Debug)]
 struct BSTNode<T: Ord + Debug> {
