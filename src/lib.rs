@@ -63,33 +63,31 @@ impl<T: Ord + Debug> BSTNode<T> {
     }
 
     fn remove(&mut self, data: T) {
-        dbg!(&self.data, &data);
         match self.data.cmp(&data) {
             Ordering::Greater => match &mut self.less {
                 Some(less) => {
-                    if less.data == data {
+                    if less.data == data && less.data_count == 1 {
                         let less = self.less.take();
                         drop(less)
                     } else {
                         less.remove(data);
                     }
                 }
-                None => return,
+                None => (),
             },
             Ordering::Less => match &mut self.more {
                 Some(more) => {
-                    if more.data == data {
+                    if more.data == data && more.data_count == 1 {
                         let more = self.more.take();
                         drop(more)
                     } else {
                         more.remove(data)
                     }
                 }
-                None => return,
+                None => (),
             },
             Ordering::Equal => {
-                // Base case
-                panic!("This node should've been removed in an earlier iteration")
+                unreachable!("This node should've been removed in an earlier iteration")
             }
         }
     }
