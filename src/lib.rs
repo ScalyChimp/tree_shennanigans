@@ -27,11 +27,23 @@ where
         self.root.insert(data)
     }
 
+    fn depth(&self) -> usize {
+        self.root.depth()
+    }
+
+    fn insert_multiple<C>(&mut self, collection: C)
+    where
+        C: IntoIterator<Item = T>,
+    {
+        for data in collection {
+            self.root.insert(data);
+        }
+    }
+
     fn remove(&mut self, data: T) {
         self.root.remove(data)
     }
 }
-
 
 #[derive(PartialEq, Debug)]
 struct BSTNode<T: Ord + Debug> {
@@ -97,6 +109,19 @@ impl<T: Ord + Debug> BSTNode<T> {
             more: None,
         })
     }
+
+    fn depth(&self) -> usize {
+        usize::max(
+            match &self.less {
+                Some(node) => node.depth(),
+                None => 0,
+            },
+            match &self.more {
+                Some(node) => node.depth(),
+                None => 0,
+            },
+        ) + 1
+    }
 }
 
 #[cfg(test)]
@@ -149,5 +174,32 @@ mod tests {
 
         assert_eq!(tree.root.more, None);
         assert_eq!(tree.root.less, None);
+    }
+
+    #[test]
+    fn level_two_removal() {
+        let mut tree = BSTree::new(3);
+
+        tree.insert_multiple(vec![1, 2, 4, 5]);
+        tree.remove(5);
+        tree.remove(2);
+        dbg!(&tree);
+        assert_eq!(tree.depth(), 2)
+    }
+
+    #[test]
+    fn depth() {
+        let mut tree = BSTree::new(2);
+
+        assert_eq!(tree.depth(), 1);
+
+        tree.insert(1);
+        tree.insert(3);
+
+        assert_eq!(tree.depth(), 2);
+
+        tree.insert(4);
+
+        assert_eq!(tree.depth(), 3)
     }
 }
