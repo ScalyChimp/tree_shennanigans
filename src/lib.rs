@@ -3,12 +3,14 @@
 use std::cmp::Ordering;
 use std::fmt::Debug;
 
-struct BSTree<T: Eq + Ord + Debug> {
+#[derive(Debug)]
+struct BSTree<T: Ord + Debug> {
     root: BSTNode<T>,
 }
+
 impl<T> BSTree<T>
 where
-    T: Eq + Ord + Debug,
+    T: Ord + Debug,
 {
     fn new(data: T) -> BSTree<T> {
         BSTree {
@@ -35,7 +37,7 @@ enum Error {
 }
 
 #[derive(PartialEq, Debug)]
-struct BSTNode<T: Eq + Ord + Debug> {
+struct BSTNode<T: Ord + Debug> {
     data: T,
     data_count: u64,
 
@@ -43,7 +45,7 @@ struct BSTNode<T: Eq + Ord + Debug> {
     more: Option<Box<BSTNode<T>>>,
 }
 
-impl<T: Eq + Ord + Debug> BSTNode<T> {
+impl<T: Ord + Debug> BSTNode<T> {
     fn insert(&mut self, data: T) {
         match self.data.cmp(&data) {
             Ordering::Greater => match &mut self.less {
