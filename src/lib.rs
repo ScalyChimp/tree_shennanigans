@@ -56,15 +56,15 @@ struct BSTNode<T: Ord + Debug> {
 
 impl<T: Ord + Debug> BSTNode<T> {
     fn insert(&mut self, data: T) {
-        match self.data.cmp(&data) {
-            Ordering::Greater => match &mut self.less {
+        match &data.cmp(&self.data) {
+            Ordering::Less => match &mut self.less {
                 Some(less) => less.insert(data),
                 None => self.less = Some(BSTNode::new_boxed(data)),
             },
             Ordering::Equal => {
-                self.data_count += 1; // Base case
+                self.data_count += 1;
             }
-            Ordering::Less => match &mut self.more {
+            Ordering::Greater => match &mut self.more {
                 Some(more) => more.insert(data),
                 None => self.more = Some(BSTNode::new_boxed(data)),
             },
@@ -72,8 +72,8 @@ impl<T: Ord + Debug> BSTNode<T> {
     }
 
     fn remove(&mut self, data: T) {
-        match self.data.cmp(&data) {
-            Ordering::Greater => match &mut self.less {
+        match &data.cmp(&self.data) {
+            Ordering::Less => match &mut self.less {
                 Some(less) => {
                     if less.data == data && less.data_count == 1 {
                         let less = self.less.take();
@@ -84,7 +84,7 @@ impl<T: Ord + Debug> BSTNode<T> {
                 }
                 None => (),
             },
-            Ordering::Less => match &mut self.more {
+            Ordering::Greater => match &mut self.more {
                 Some(more) => {
                     if more.data == data && more.data_count == 1 {
                         let more = self.more.take();
